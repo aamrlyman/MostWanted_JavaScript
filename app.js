@@ -139,8 +139,12 @@ function displayPeople(people) {
  */
 function displayPerson(person) {
     let personInfo = '';
-    for (const key in person){
-        personInfo += `${key}: ${person[key]} \n`
+    for(const key in person){
+        if(key === "currentSpouse" || key === "parents"){
+            continue;
+        }
+        else{ personInfo += `${key}: ${person[key]} \n`
+        }
     }
     //! TODO #1a: finish getting the rest of the information to display //////////////////////////////////////////
     alert(personInfo);
