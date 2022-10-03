@@ -125,7 +125,7 @@ function displayPeople(people) {
     let altertString = people
             .map(function (person) {
 
-                return `${person.relationship}: ${person.firstName} ${person.lastName}`;
+                return `${person.relationship ? person.relationship: ''}: ${person.firstName} ${person.lastName}`;
             })
             .join("\n");
         return altertString;
@@ -193,9 +193,9 @@ function chars(input) {
 
 /**
  * Find Family Function searches for Siblings, Spouse and parents
- * @param {[{object}]}      person
- * @param {[{object}]}      people
- * @returns {[{object}]}    personFamily
+ * @param {Object}      person
+ * @param {Array}      people
+ * @returns {Object []}    personFamily
  */
 function findPersonFamily(person, people){
     let foundPerson = person;
@@ -229,10 +229,13 @@ function findPersonFamily(person, people){
 
 
 
+//For descendents use Joy 
+//Consider making a find by ID function 
 ////////////// For Each Loop Idea
 //(peopleItem.parents.forEach(element => { 
 //if(element === foundPerson.parents[0] ||
 //     element === foundPerson.parents[1]){
 //         peopleItem.relationship = "sibling";                                   
 //     }
-//  }))){ 
+//  }))){
+    //parents .includes() in a for loop  
