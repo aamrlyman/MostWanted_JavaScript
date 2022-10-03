@@ -122,13 +122,13 @@ function searchByName(people) {
  * @param {Array} people        A collection of person objects.
  */
 function displayPeople(people) {
-    alert(
-        people
+    let altertString = people
             .map(function (person) {
-                return `${person.firstName} ${person.lastName}`;
+
+                return `${person.relationship}: ${person.firstName} ${person.lastName}`;
             })
-            .join("\n")
-    );
+            .join("\n");
+        return altertString;
 }
 // End of displayPeople()
 
@@ -193,14 +193,26 @@ function chars(input) {
 
 function findPersonFamily(person, people){
     let foundPerson = person;
-    let personFamily = people.filter(function (peopleItem) {
-        if(peopleItem.id === foundPerson.currentSpouse ||
-           peopleItem.id === foundPerson.parents[0] ||
-           peopleItem.id === foundPerson.parents[1] ||
-           (peopleItem.parents !== [] && peopleItem.parents === foundPerson.parents)
-            ){
-            return true;
+    let personFamily = people.filter(function (peopleItem){
+        if(peopleItem.id === foundPerson.currentSpouse){
+                peopleItem.relationship = "currentSpouse";
+                return true;
             }
+        else if( peopleItem.id === foundPerson.parents[0] || peopleItem.id === foundPerson.parents[1]){
+                    peopleItem.relationship = "parent";
+                    return true;
+            }
+        else if((peopleItem.parents.length > 0) && 
+                (peopleItem.id !== foundPerson.id) && 
+                (peopleItem.parents[0] === foundPerson.parents[0] || 
+                 peopleItem.parents[0] === foundPerson.parents[1] ||  
+                 peopleItem.parents[1] === foundPerson.parents[1] ||  
+                 peopleItem.parents[1] === foundPerson.parents[0]   
+                    )){
+                        peopleItem.relationship = "sibling";                      
+                        return true;
+
+                    }       
             else{
                 return false;
             }
@@ -211,3 +223,10 @@ function findPersonFamily(person, people){
 
 
 
+////////////// For Each Loop Idea
+//(peopleItem.parents.forEach(element => { 
+//if(element === foundPerson.parents[0] ||
+//     element === foundPerson.parents[1]){
+//         peopleItem.relationship = "sibling";                                   
+//     }
+//  }))){ 
