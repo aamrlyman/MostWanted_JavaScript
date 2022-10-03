@@ -191,6 +191,12 @@ function chars(input) {
 //////////////////////////////////////////* End Of Starter Code *//////////////////////////////////////////
 // Any additional functions can be written below this line 👇. Happy Coding! 😁
 
+/**
+ * Find Family Function searches for Siblings, Spouse and parents
+ * @param {[{object}]}      person
+ * @param {[{object}]}      people
+ * @returns {[{object}]}    personFamily
+ */
 function findPersonFamily(person, people){
     let foundPerson = person;
     let personFamily = people.filter(function (peopleItem){
