@@ -201,23 +201,20 @@ function findPersonFamily(person, people){
     let foundPerson = person;
     let personFamily = people.filter(function (peopleItem){
         if(peopleItem.id === foundPerson.currentSpouse){
-                peopleItem.relationship = "currentSpouse";
+                peopleItem.relationship = "CurrentSpouse";
                 return true;
             }
         else if( peopleItem.id === foundPerson.parents[0] || peopleItem.id === foundPerson.parents[1]){
-                    peopleItem.relationship = "parent";
+                    peopleItem.relationship = "Parent";
                     return true;
             }
         else if((peopleItem.parents.length > 0) && 
                 (peopleItem.id !== foundPerson.id) && 
-                (peopleItem.parents[0] === foundPerson.parents[0] || 
-                 peopleItem.parents[0] === foundPerson.parents[1] ||  
-                 peopleItem.parents[1] === foundPerson.parents[1] ||  
-                 peopleItem.parents[1] === foundPerson.parents[0]   
-                    )){
-                        peopleItem.relationship = "sibling";                      
+                (foundPerson.parents.includes(peopleItem.parents[0]) ||
+                 foundPerson.parents.includes(peopleItem.parents[1]))
+                ){
+                        peopleItem.relationship = "Sibling";                      
                         return true;
-
                     }       
             else{
                 return false;
