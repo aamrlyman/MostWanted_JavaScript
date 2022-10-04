@@ -19,16 +19,16 @@ function app(people) {
     // promptFor() is a custom function defined below that helps us prompt and validate input more easily
     // Note that we are chaining the .toLowerCase() immediately after the promptFor returns its value
     let searchType = promptFor(
-        "Do you know the name of the person you are looking for? Enter 'yes' or 'no'",
+        "Do you know the name of the person you are looking for?\n Enter (y) for yes or (n) for no",
         yesNo
     ).toLowerCase();
     let searchResults;
     // Routes our application based on the user's input
     switch (searchType) {
-        case "yes":
+        case "y": //yes
             searchResults = searchByName(people);
             break;
-        case "no":
+        case "n": //no
             //! TODO #4: Declare a searchByTraits (multiple traits) function //////////////////////////////////////////
                 //! TODO #4a: Provide option to search for single or multiple //////////////////////////////////////////
             searchResults = searchByTraits(people);
@@ -59,33 +59,39 @@ function mainMenu(person, people) {
         return app(people);
     }
     let displayOption = prompt(
-        `Found ${person[0].firstName} ${person[0].lastName}. Do you want to know their 'info', 'family', or 'descendants'?\nType the option you want or type 'restart' or 'quit'.`
+        `Found ${person[0].firstName} ${person[0].lastName}. 
+        Type a NUMBER to choose from the following options: 
+            (1)Get more info about ${person[0].firstName} ${person[0].lastName}  
+            (2) Find ${person[0].firstName} ${person[0].lastName}'s family members 
+            (3) Find ${person[0].firstName} ${person[0].lastName}'s descendants 
+            (4) Restart 
+            (5) Quit`
     );
     // Routes our application based on the user's input
     switch (displayOption) {
-        case "info":
+        case "1": //info
             //! TODO #1: Utilize the displayPerson function //////////////////////////////////////////
             // HINT: Look for a person-object stringifier utility function to help
             let personInfo = displayPerson(person[0]);
             alert(personInfo);
             break;
-        case "family":
+        case "2": //family
             //! TODO #2: Declare a findPersonFamily function //////////////////////////////////////////
             // HINT: Look for a people-collection stringifier utility function to help
             let personFamily = findPersonFamily(person[0], people);
             alert(personFamily);
             break;
-        case "descendants":
+        case "3": //descendants
             //! TODO #3: Declare a findPersonDescendants function //////////////////////////////////////////
             // HINT: Review recursion lecture + demo for bonus user story
             let personDescendants = findPersonDescendants(person[0], people);
-            alert(personDescendants);
+            alert(displayPeople(personDescendants));
             break;
-        case "restart":
+        case "4": //restart
             // Restart app() from the very beginning
             app(people);
             break;
-        case "quit":
+        case "5": //quit
             // Stop application execution
             return;
         default:
@@ -122,10 +128,10 @@ function searchByName(people) {
  * @param {Array} people        A collection of person objects.
  */
 function displayPeople(people) {
+    if(people.length === 0){ return `No descendents found.`};
     let altertString = people
             .map(function (person) {
-
-                return `${person.relationship ? person.relationship: ''}: ${person.firstName} ${person.lastName}`;
+                return `${person.relationship ? `${person.relationship}:`: ''} ${person.firstName} ${person.lastName}`;
             })
             .join("\n");
         return altertString;
@@ -173,7 +179,7 @@ function promptFor(question, valid) {
  * @returns {Boolean}           The result of our condition evaluation.
  */
 function yesNo(input) {
-    return input.toLowerCase() === "yes" || input.toLowerCase() === "no";
+    return input.toLowerCase() === "y" || input.toLowerCase() === "n";
 }
 // End of yesNo()
 
@@ -223,6 +229,64 @@ function findPersonFamily(person, people){
     );
     return displayPeople(personFamily); 
 }
+
+/**
+ * Find Children Function: 
+ * @param {Object}      person
+ * @param {Array}      people
+ * @returns {Object []}    personChildren
+ */
+
+function findPersonDescendants(person, people){
+    let foundPerson = person;
+    let personDescendents = []
+    let personChildren = people.filter( (peopleItem) => { 
+    if(peopleItem.parents.includes(foundPerson.id)){
+        return true;
+        }
+    });
+    if (personChildren.length === 0){
+        return personChildren
+    } 
+    else{
+        personDescendents = personDescendents.concat(personChildren);
+        for(let i = 0; i < personChildren.length; i++){
+            personChildren[i].relationship = 'Descendant';
+            personDescendents = personDescendents.concat(findPersonDescendants(personChildren[i], people))
+        }
+    }
+    return personDescendents;
+}
+
+/**
+ * Find Descendents Function: 
+ * @param {Object}      person
+ * @param {Array}      people
+ * @returns {Object []}    personDecscendents
+ */
+
+// function findPersonDescendants(person, people){
+//     let foundPerson = person;
+//     //Children
+//     let personDescendants = findPersonChildren(foundPerson, people);
+//     if(personDescendants.length === 0){
+//         return personDescendants;
+//         //return `${foundPerson.firstName} ${foundPerson.lastName} has no descendants`;
+//     }
+//     //Grand children
+//     let grandChildren = []
+//     for( let i = 0; i < personDescendants.length; i++){
+//         grandChildren = grandChildren.concat(
+//             findPersonChildren(personDescendants[i], people)
+//         );
+//     }
+//     if(grandChildren.length > 0){
+//         personDescendants.concat(grandChildren);
+//         findPersonDescendants()
+//     }
+
+//     return displayPeople(personDescendants);
+// }
 
 
 
