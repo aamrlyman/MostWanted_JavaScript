@@ -33,7 +33,10 @@ function app(people) {
             //! TODO #4: Declare a searchByTraits (multiple traits) function //////////////////////////////////////////
                 //! TODO #4a: Provide option to search for single or multiple //////////////////////////////////////////
             searchResults = searchByTraits(people);
+            alert(displayPeople(searchResults));
             break;
+        case '7':
+                displayTraits(people[0]); 
         default:
             // Re-initializes the app() if neither case was hit above. This is an instance of recursion.
             app(people);
@@ -182,7 +185,7 @@ function promptFor(question, valid) {
  * @returns {Boolean}           The result of our condition evaluation.
  */
 function yesNo(input) {
-    return input.toLowerCase() === "y" || input.toLowerCase() === "n";
+    return input.toLowerCase() === "y" || input.toLowerCase() === "n" || input === '7';
 }
 // End of yesNo()
 
@@ -266,36 +269,47 @@ function findPersonDescendants(person, people){
 }
 
 /**
- * Search by traits Function: 
- * @param {Array}      people
- * @returns {Object []}    personDecscendents
+ * SearchByTraits Function:
+ *    declares queryArray []
+ * alert function prints an array of trait options
+ * buildQuery switch case takes user input with default to start function over 
+ *      addKeyTrait function nested under cases of switch case adds trait to queryArray
+ *      addValue function takes in user input sends it to validator and adds it to queryArray and returns it
+ *      checkReadyForQuery function takes in queryArray checks the length 
+ *         if length is less than 10, calls promptFor functions and asks user if they want to add another trait to query
+ *              if yes: call alert function and buildQuery function
+ *              if no: returns queryArray
+ *         if length is more than 10 - returns queryArray
+ * filterByQuery function takes in query array and people array
+ *       use a for loop inside the filter function that
+ *       loops through each key value pair in the array for every item on the people array
+ * run the result through the displayPeople Function
  */
 
-function searchByTraits(people){
-    let traits = [
-    "id", 
-    "firstName",
-    "lastName",
-    "gender",
-    "dob",
-    "height",
-    "weight",
-    "eyeColor",
-    "occupation",
-    "parents",
-    "currentSpouse"
-    ]
-    let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
-    let peopleWithTraits = people.filter(
-        function (peopleItem){
-            if(peopleItem[traits[userInput]]){
-                return true;
-            }
-
-        }
-    )
-    return peopleWithTraits;
+function displayTraits(person){
+    let alertString = '';
+    let counter = 0;
+    for(const key in person){
+        alertString += `(${counter +=1}) ${key}\n`;
+    }
+    return prompt(`Type a number to select the trait you want to search:\n${alertString}`);
 }
+
+function searchByTraits(people){
+    queryArray = [];
+}
+
+//     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
+//     let peopleWithTraits = people.filter(
+//         function (peopleItem){
+//             if(peopleItem[traits[userInput]]){
+//                 return true;
+//             }
+
+//         }
+//     )
+//     return peopleWithTraits;
+// }
 // function findPersonDescendants(person, people){
 //     let foundPerson = person;
 //     //Children
@@ -330,4 +344,4 @@ function searchByTraits(people){
 //         peopleItem.relationship = "sibling";                                   
 //     }
 //  }))){
-    //parents .includes() in a for loop  
+//    //parents .includes() in a for loop
