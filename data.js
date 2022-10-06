@@ -13,6 +13,7 @@ const data = [
 		"lastName": "Bob",
 		"gender": "male",
 		"dob": "1/18/1949",
+		
 		"height": 71,
 		"weight": 175,
 		"eyeColor": "brown",

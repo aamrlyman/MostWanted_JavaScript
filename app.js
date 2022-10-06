@@ -1,3 +1,4 @@
+
 /*
     Author: devCodeCamp
     Description: Most Wanted Starter Code
@@ -61,9 +62,9 @@ function mainMenu(person, people) {
     let displayOption = prompt(
         `Found ${person[0].firstName} ${person[0].lastName}. 
         Type a NUMBER to choose from the following options: 
-            (1)Get more info about ${person[0].firstName} ${person[0].lastName}  
-            (2) Find ${person[0].firstName} ${person[0].lastName}'s family members 
-            (3) Find ${person[0].firstName} ${person[0].lastName}'s descendants 
+            (1) Get more INFO about ${person[0].firstName} ${person[0].lastName}  
+            (2) Find ${person[0].firstName} ${person[0].lastName}'s FAMILY members 
+            (3) Find ${person[0].firstName} ${person[0].lastName}'s DESCENDANTS 
             (4) Restart 
             (5) Quit`
     );
@@ -169,6 +170,8 @@ function promptFor(question, valid) {
     do {
         var response = prompt(question).trim();
     } while (!response || !valid(response));
+    response = response.toLowerCase()
+    response = response.charAt(0).toUpperCase() + response.slice(1);
     return response;
 }
 // End of promptFor()
@@ -190,7 +193,11 @@ function yesNo(input) {
  * @returns {Boolean}           Default validation -- no logic yet.
  */
 function chars(input) {
-    return true; // Default validation only
+    if (!/^[a-zA-Z]+$/.test(input)){
+        alert("Response must contain only letters.")
+        searchByName(data);
+    }; 
+    return true;
 }
 // End of chars()
 
