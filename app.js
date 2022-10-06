@@ -266,12 +266,36 @@ function findPersonDescendants(person, people){
 }
 
 /**
- * Find Descendents Function: 
- * @param {Object}      person
+ * Search by traits Function: 
  * @param {Array}      people
  * @returns {Object []}    personDecscendents
  */
 
+function searchByTraits(people){
+    let traits = [
+    "id", 
+    "firstName",
+    "lastName",
+    "gender",
+    "dob",
+    "height",
+    "weight",
+    "eyeColor",
+    "occupation",
+    "parents",
+    "currentSpouse"
+    ]
+    let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
+    let peopleWithTraits = people.filter(
+        function (peopleItem){
+            if(peopleItem[traits[userInput]]){
+                return true;
+            }
+
+        }
+    )
+    return peopleWithTraits;
+}
 // function findPersonDescendants(person, people){
 //     let foundPerson = person;
 //     //Children
