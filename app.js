@@ -82,14 +82,14 @@ function mainMenu(person, people) {
         case "2": //family
             //! TODO #2: Declare a findPersonFamily function //////////////////////////////////////////
             // HINT: Look for a people-collection stringifier utility function to help
-            let personFamily = findPersonFamily(person[0], people);
-            alert(personFamily);
+            let personRelationships = findPersonFamily(person[0], people);
+            alert(personRelationships.length === 0 ? "No family found" : renderPersonRelationships(personRelationships));
             break;
         case "3": //descendants
             //! TODO #3: Declare a findPersonDescendants function //////////////////////////////////////////
             // HINT: Review recursion lecture + demo for bonus user story
             let personDescendants = findPersonDescendants(person[0], people);
-            alert(displayPeople(personDescendants));
+            alert(personDescendants.length === 0 ? "No descendants found.": renderPersonRelationships(personDescendants.map(d => Object.assign({relationship: "Descendant"}, d))));
             break;
         case "4": //restart
             // Restart app() from the very beginning
@@ -132,15 +132,25 @@ function searchByName(people) {
  * @param {Array} people        A collection of person objects.
  */
 function displayPeople(people) {
-    if(people.length === 0){ return `No descendents found.`};
     let altertString = people
             .map(function (person) {
-                return `${person.relationship ? `${person.relationship}:`: ''} ${person.firstName} ${person.lastName}`;
+                return `${person.firstName} ${person.lastName}`;
             })
             .join("\n");
         return altertString;
 }
 // End of displayPeople()
+
+
+function renderPersonRelationships(personRelationships) {
+    let alertString = personRelationships
+            .map(function (personRelationship) {
+                return `${personRelationship.relationship}: ${personRelationship.firstName} ${personRelationship.lastName}`;
+            })
+            .join("\n");
+        return alertString;
+}
+
 
 /**
  * This function will be useful for STRINGIFYING a person-object's properties
@@ -211,34 +221,22 @@ function chars(input) {
  * Find Family Function searches for Siblings, Spouse and parents
  * @param {Object}      person
  * @param {Array}      people
- * @returns {Object []}    personFamily
+ * @returns {Object []}    personRelationsips
  */
 function findPersonFamily(person, people){
     let foundPerson = person;
-    let personFamily = people.filter(function (peopleItem){
-        if(peopleItem.id === foundPerson.currentSpouse){
-                peopleItem.relationship = "CurrentSpouse";
-                return true;
-            }
-        else if( peopleItem.id === foundPerson.parents[0] || peopleItem.id === foundPerson.parents[1]){
-                    peopleItem.relationship = "Parent";
-                    return true;
-            }
-        else if((peopleItem.parents.length > 0) && 
-                (peopleItem.id !== foundPerson.id) && 
-                (foundPerson.parents.includes(peopleItem.parents[0]) ||
-                 foundPerson.parents.includes(peopleItem.parents[1]))
-                ){
-                        peopleItem.relationship = "Sibling";                      
-                        return true;
-                    }       
-            else{
-                return false;
-            }
-        }
-    );
-    return displayPeople(personFamily); 
+    let currentSpouses = people.filter(p => p.id === foundPerson.currentSpouse);
+    let parents = people.filter(p => p.id === foundPerson.parents[0] || p.id === foundPerson.parents[1]);
+    let siblings = people.filter(p => p.id !== foundPerson.id && p.parents.some(parentId => foundPerson.parents.includes(parentId)));
+    let personRelationships = [
+        {relationship:"Current Spouse", people: currentSpouses},
+        {relationship:"Parent", people: parents},
+        {relationship:"Sibling", people: siblings}
+    ].flatMap(pr => pr.people.map(p => Object.assign({relationship: pr.relationship}, p)));
+
+    return personRelationships; 
 }
+
 
 /**
  * Find Children Function: 
@@ -247,31 +245,17 @@ function findPersonFamily(person, people){
  * @returns {Object []}    personChildren
  */
 
-function findPersonDescendants(person, people){
-    let foundPerson = person;
-    let personDescendents = []
-    let personChildren = people.filter( (peopleItem) => { 
-    if(peopleItem.parents.includes(foundPerson.id)){
-        return true;
-        }
-    });
-    if (personChildren.length === 0){
-        return personChildren
-    } 
-    else{
-        personDescendents = personDescendents.concat(personChildren);
-        for(let i = 0; i < personChildren.length; i++){
-            personChildren[i].relationship = 'Descendant';
-            personDescendents = personDescendents.concat(findPersonDescendants(personChildren[i], people))
-        }
-    }
+function findPersonDescendants(foundPerson, people){
+    const personChildren = people.filter((peopleItem) => peopleItem.parents.includes(foundPerson.id));
+    const childDescendants = personChildren.flatMap(child => findPersonDescendants(child, people));
+    const personDescendents = personChildren.concat(childDescendants);
     return personDescendents;
 }
 
 /**
  * SearchByTraits Function:
- *    declares queryArray []
- * alert function prints an array of trait options
+ *    declares queryArray [{trait: eye color}]
+ * prompt function prints an array of trait options
  * buildQuery switch case takes user input with default to start function over 
  *      addKeyTrait function nested under cases of switch case adds trait to queryArray
  *      addValue function takes in user input sends it to validator and adds it to queryArray and returns it
@@ -290,58 +274,112 @@ function displayTraits(person){
     let alertString = '';
     let counter = 0;
     for(const key in person){
+        if(["currentSpouse", "parents", "firstName", "lastName"].includes(key)){
+            continue;
+        }
         alertString += `(${counter +=1}) ${key}\n`;
     }
     return prompt(`Type a number to select the trait you want to search:\n${alertString}`);
 }
 
-function searchByTraits(people){
-    queryArray = [];
-}
+function switchCaseQuery(){
+    switch(displayTraits(people[0])){
+        //number format validation
+        case "1"://id 
+        case "4": //height
+        case "5": //weight
+            break;
+        
+        //letter format validation
+        case "2":// gender
+        case "6": // eye color
+        case "7": // occupation
+            break;
+        //date format validation
+        case "3"://dob  
 
-//     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
-//     let peopleWithTraits = people.filter(
-//         function (peopleItem){
-//             if(peopleItem[traits[userInput]]){
-//                 return true;
-//             }
-
-//         }
-//     )
-//     return peopleWithTraits;
-// }
-// function findPersonDescendants(person, people){
-//     let foundPerson = person;
-//     //Children
-//     let personDescendants = findPersonChildren(foundPerson, people);
-//     if(personDescendants.length === 0){
-//         return personDescendants;
-//         //return `${foundPerson.firstName} ${foundPerson.lastName} has no descendants`;
-//     }
-//     //Grand children
-//     let grandChildren = []
-//     for( let i = 0; i < personDescendants.length; i++){
-//         grandChildren = grandChildren.concat(
-//             findPersonChildren(personDescendants[i], people)
-//         );
-//     }
-//     if(grandChildren.length > 0){
-//         personDescendants.concat(grandChildren);
-//         findPersonDescendants()
-//     }
-
-//     return displayPeople(personDescendants);
-// }
-
-
-
-//For descendents use Joy 
-//Consider making a find by ID function 
-////////////// For Each Loop Idea
-//(peopleItem.parents.forEach(element => { 
-//if(element === foundPerson.parents[0] ||
-//     element === foundPerson.parents[1]){
-//         peopleItem.relationship = "sibling";                                   
-//     }
-//  }))){
-//    //parents .includes() in a for loop
+        break;
+        default:
+            switchCaseQuery();
+        }
+        
+        
+        
+    }
+    
+    function searchByTraits(people){
+        queryArray = [];
+    }
+    
+    //     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
+    //     let peopleWithTraits = people.filter(
+        //         function (peopleItem){
+            //             if(peopleItem[traits[userInput]]){
+                //                 return true;
+                //             }
+                
+                //         }
+                //     )
+                //     return peopleWithTraits;
+                // }
+                // function findPersonDescendants(person, people){
+                    //     let foundPerson = person;
+                    //     //Children
+                    //     let personDescendants = findPersonChildren(foundPerson, people);
+                    //     if(personDescendants.length === 0){
+                        //         return personDescendants;
+                        //         //return `${foundPerson.firstName} ${foundPerson.lastName} has no descendants`;
+                        //     }
+                        //     //Grand children
+                        //     let grandChildren = []
+                        //     for( let i = 0; i < personDescendants.length; i++){
+                            //         grandChildren = grandChildren.concat(
+                                //             findPersonChildren(personDescendants[i], people)
+                                //         );
+                                //     }
+                                //     if(grandChildren.length > 0){
+                                    //         personDescendants.concat(grandChildren);
+                                    //         findPersonDescendants()
+                                    //     }
+                                    
+                                    //     return displayPeople(personDescendants);
+                                    // }
+                                    
+                                    
+                                    
+                                    //For descendents use Joy 
+                                    //Consider making a find by ID function 
+                                    ////////////// For Each Loop Idea
+                                    //(peopleItem.parents.forEach(element => { 
+                                        //if(element === foundPerson.parents[0] ||
+                                        //     element === foundPerson.parents[1]){
+                                            //         peopleItem.relationship = "sibling";                                   
+    //     }
+    //  }))){
+        //    //parents .includes() in a for loop
+        // let personFamily = currentSpouses.map(p => Object.assign({relationship: "Current Spouse"}, p))
+        //     .concat(parents.map(p => {relationship: "Parent", ...p}))
+        //     .concat(siblings.map(p => {relationship: "Sibling", ...p}));
+        // let personFamily = people.filter( (peopleItem)=>{
+            //     if(peopleItem.id === foundPerson.currentSpouse){
+                //             peopleItem.relationship = "CurrentSpouse";
+                //             return true;
+                //         }
+                //     else if( peopleItem.id === foundPerson.parents[0] || peopleItem.id === foundPerson.parents[1]){
+        //                 peopleItem.relationship = "Parent";
+        //                 return true;
+        //         }
+        //     else if((peopleItem.parents.length > 0) && 
+        //             (peopleItem.id !== foundPerson.id) && 
+        //             (foundPerson.parents.includes(peopleItem.parents[0]) ||
+        //              foundPerson.parents.includes(peopleItem.parents[1]))
+        //             ){
+            //                     peopleItem.relationship = "Sibling";                      
+            //                     return true;
+            //                 }       
+            //         else{
+                //             return false;
+                //         }
+                //     }
+                // );
+                //peopleItem.parents.some(p => foundPerson.parents.includes(p))
