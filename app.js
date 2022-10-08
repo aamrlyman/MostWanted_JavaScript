@@ -270,47 +270,62 @@ function findPersonDescendants(foundPerson, people){
  * run the result through the displayPeople Function
  */
 
-function displayTraits(person){
+function chooseSeachByTrait(traitsArray){
     let alertString = '';
     let counter = 0;
-    for(const key in person){
-        if(["currentSpouse", "parents", "firstName", "lastName"].includes(key)){
-            continue;
-        }
-        alertString += `(${counter +=1}) ${key}\n`;
+    for(const trait of traitsArray){
+        alertString += `(${counter +=1}) ${trait}\n`;
     }
     return prompt(`Type a number to select the trait you want to search:\n${alertString}`);
 }
 
-function switchCaseQuery(){
-    switch(displayTraits(people[0])){
+function switchCaseQuery(queryArray){
+    let traits = ["id", "gender", "dob", "height", "weight", "eyecolor", "occupation", "restart"]
+    let userChosenTraitIndex = chooseSeachByTrait(traits);
+    
+    switch(userChosenTraitIndex){
         //number format validation
         case "1"://id 
         case "4": //height
         case "5": //weight
-            break;
-        
+        break;
+        //date format validation
+        case "3"://dob  
+        break;        
         //letter format validation
         case "2":// gender
         case "6": // eye color
         case "7": // occupation
+            addKeyValueToQuery(traits[userChosenTraitIndex - 1], queryArray);
+            return queryArray
             break;
-        //date format validation
-        case "3"://dob  
-
-        break;
+        case "8":
+            app(people);
         default:
             switchCaseQuery();
-        }
-        
-        
-        
+        }  
     }
     
+    function addKeyValueToQuery(chosenTrait, queryArray){
+        let traitObj = {"trait": chosenTrait,
+                        "value": addValue(chosenTrait)                           
+                        };
+        queryArray.push(traitObj);
+    }
+    
+    function addValue(chosenTrait){
+        let userChosenValue = prompt(
+            `What "${chosenTrait}" would you like to search for?`
+        )
+        return userChosenValue
+    }
     function searchByTraits(people){
-        queryArray = [];
-    }
+        let queryArray = [];
+        let QueryObj = switchCaseQuery(queryArray);
     
+    }  
+    function buildQuery(){
+    }
     //     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
     //     let peopleWithTraits = people.filter(
         //         function (peopleItem){
