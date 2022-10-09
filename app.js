@@ -297,7 +297,6 @@ function switchCaseQuery(queryArray){
         case "6": // eye color
         case "7": // occupation
             addKeyValueToQuery(traits[userChosenTraitIndex - 1], queryArray);
-            return queryArray
             break;
         case "8":
             app(people);
@@ -321,11 +320,27 @@ function switchCaseQuery(queryArray){
     }
     function searchByTraits(people){
         let queryArray = [];
-        let QueryObj = switchCaseQuery(queryArray);
-    
+        queryArray = checkReadyForQuery(queryArray)
+        
     }  
-    function buildQuery(){
+    function checkReadyForQuery(queryArray){
+        let keepGoing = true;
+        do{
+            yesNoInput = ''
+            switchCaseQuery(queryArray);
+            if(queryArray.length >= 5){
+                keepGoing = false;
+                };
+            else yesNoInput = yesNo(prompt(`Would you like to add another trait?\n Enter (y) for yes or (n) for no`));
+             (yesNoInput === "n")
+                keepGoing = false;
+
+        } 
     }
+        while(keepGoing)
+        return queryArray;
+    }
+
     //     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
     //     let peopleWithTraits = people.filter(
         //         function (peopleItem){
