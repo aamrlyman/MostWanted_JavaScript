@@ -35,8 +35,6 @@ function app(people) {
             searchResults = searchByTraits(people);
             alert(displayPeople(searchResults));
             break;
-        case '7':
-                displayTraits(people[0]); 
         default:
             // Re-initializes the app() if neither case was hit above. This is an instance of recursion.
             app(people);
@@ -195,7 +193,7 @@ function promptFor(question, valid) {
  * @returns {Boolean}           The result of our condition evaluation.
  */
 function yesNo(input) {
-    return input.toLowerCase() === "y" || input.toLowerCase() === "n" || input === '7';
+    return input.toLowerCase() === "y" || input.toLowerCase() === "n";
 }
 // End of yesNo()
 
@@ -311,6 +309,19 @@ function switchCaseQuery(queryArray){
                         };
         queryArray.push(traitObj);
     }
+    function yesNoSwitchCase(input){
+        switch(input){
+            case "y":
+                break;
+            case "n": 
+                return input 
+                break;
+            default:
+                yesNoSwitchCase(prompt(
+                    `Would you like to add another trait?\n Enter (y) for yes or (n) for no`)
+                    .trim());
+        }        
+    }
     
     function addValue(chosenTrait){
         let userChosenValue = prompt(
@@ -318,29 +329,34 @@ function switchCaseQuery(queryArray){
         )
         return userChosenValue
     }
-    function searchByTraits(people){
-        let queryArray = [];
-        queryArray = checkReadyForQuery(queryArray)
-        
-    }  
     function checkReadyForQuery(queryArray){
         let keepGoing = true;
         do{
-            yesNoInput = ''
             switchCaseQuery(queryArray);
-            if(queryArray.length >= 5){
-                keepGoing = false;
-                };
-            else yesNoInput = yesNo(prompt(`Would you like to add another trait?\n Enter (y) for yes or (n) for no`));
-             (yesNoInput === "n")
-                keepGoing = false;
-
-        } 
-    }
-        while(keepGoing)
-        return queryArray;
-    }
-
+            if(queryArray.length >= 5 || yesNoSwitchCase(prompt(
+                                        `Would you like to add another trait?\n Enter (y) for yes or (n) for no`)
+                                        .trim().toLocaleLowerCase()) === "n"){
+                                            keepGoing = false;
+                                        };
+                                        
+                                    }
+                                    while(keepGoing)
+                                    return queryArray;
+                                }
+                                
+    function filterByQuery(people, queryArray){
+        let foundByTraits = people.filter(peopleItem => 
+                     peopleItem[queryArraytrait] =        
+            )                                
+                                }    
+                                
+                                
+    function searchByTraits(people){
+        let queryArray = [];
+        queryArray = checkReadyForQuery(queryArray)
+                                        
+    }  
+                                
     //     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
     //     let peopleWithTraits = people.filter(
         //         function (peopleItem){
