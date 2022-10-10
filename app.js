@@ -278,7 +278,7 @@ function chooseSeachByTrait(traitsArray){
 }
 
 function switchCaseQuery(queryArray){
-    let traits = ["id", "gender", "dob", "height", "weight", "eyecolor", "occupation", "restart"]
+    let traits = ["id", "gender", "dob", "height", "weight", "eyeColor", "occupation", "restart"]
     let userChosenTraitIndex = chooseSeachByTrait(traits);
     
     switch(userChosenTraitIndex){
@@ -286,9 +286,11 @@ function switchCaseQuery(queryArray){
         case "1"://id 
         case "4": //height
         case "5": //weight
+            addKeyValueToQuery(traits[userChosenTraitIndex - 1], queryArray);
         break;
         //date format validation
         case "3"://dob  
+            addKeyValueToQuery(traits[userChosenTraitIndex - 1], queryArray);
         break;        
         //letter format validation
         case "2":// gender
@@ -326,18 +328,18 @@ function switchCaseQuery(queryArray){
     function addValue(chosenTrait){
         let userChosenValue = prompt(
             `What "${chosenTrait}" would you like to search for?`
-        )
+        ).trim().toLocaleLowerCase();
         return userChosenValue
     }
     function checkReadyForQuery(queryArray){
         let keepGoing = true;
         do{
             switchCaseQuery(queryArray);
-            if(queryArray.length >= 5 || yesNoSwitchCase(prompt(
-                                        `Would you like to add another trait?\n Enter (y) for yes or (n) for no`)
+            if(queryArray.length >= 5 || yesNoSwitchCase(prompt(`Would you like to add another trait?
+                                                                 Enter (y) for yes or (n) for no`)
                                         .trim().toLocaleLowerCase()) === "n"){
-                                            keepGoing = false;
-                                        };
+                keepGoing = false;
+                };
                                         
                                     }
                                     while(keepGoing)
@@ -345,16 +347,18 @@ function switchCaseQuery(queryArray){
                                 }
                                 
     function filterByQuery(people, queryArray){
-        let foundByTraits = people.filter(peopleItem => 
-                     peopleItem[queryArraytrait] =        
-            )                                
-                                }    
-                                
-                                
+        let foundByQuery = people.filter(peopleItem => 
+        queryArray.every(query => query.value == peopleItem[query.trait].toString())
+        )
+        return foundByQuery;
+
+    }  
+                                               
     function searchByTraits(people){
         let queryArray = [];
-        queryArray = checkReadyForQuery(queryArray)
-                                        
+        queryArray = checkReadyForQuery(queryArray);
+        let result = filterByQuery(people, queryArray);
+        return result;                              
     }  
                                 
     //     let userInput = parseInt(prompt("What trait would you like to search by? \n(1) id \n(2) firstName \n(3) lastName \n(4) gender \n(5) dob \n(6)height \n (7) weight \n(8) eyeColor \n(9) occupation \n(10) parents \n(11)currentSpouse"))
