@@ -32,7 +32,7 @@ function app(people) {
       //! TODO #4: Declare a searchByTraits (multiple traits) function //////////////////////////////////////////
       //! TODO #4a: Provide option to search for single or multiple //////////////////////////////////////////
       searchResults = searchByTraits(people);
-      (searchResults ? '': alert(displayPeople(searchResults)));
+      (searchResults.length > 0 ? alert(displayPeople(searchResults)): "" );
       break;
     default:
       // Re-initializes the app() if neither case was hit above. This is an instance of recursion.
